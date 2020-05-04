@@ -30,6 +30,7 @@
 		"consistent-return": "off",
 		"react/require-default-props": "off",
 		"react/jsx-one-expression-per-line": "off",
+		"react/jsx-indent-props": [2, "tab"],
 		"max-len": ["error", 1000],
 		"no-param-reassign": "off",
 		"prefer-destructuring": [
@@ -62,6 +63,7 @@
 		],
 		"react/jsx-indent": [2, "tab"],
 		"no-console": "off",
-		"no-undef": "warn"
+		"no-undef": "warn",
+		"no-nested-ternary": 0
 	}
 }
