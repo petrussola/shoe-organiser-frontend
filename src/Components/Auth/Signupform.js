@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+// helper
+import { schema } from '../../Helpers/Formvalidation';
+
 const initialSignupUser = {
 	email: '',
 	password: '',
@@ -12,7 +15,8 @@ const initialSignupUser = {
 
 const Signupform = () => {
 	const [signUpUser, setSignUpUser] = useState(initialSignupUser);
-	const [signupSuccess, setSignupSuccess] = useState(null);
+	const [signupSuccess, setSignupSuccess] = useState();
+	const [validationError, setValidationError] = useState();
 
 	const onSignupFormChange = e => {
 		setSignupSuccess(null);
@@ -24,6 +28,14 @@ const Signupform = () => {
 
 	const onSignupSubmitForm = e => {
 		e.preventDefault();
+		schema
+			.validate(signUpUser, { abortEarly: false })
+			.then(valid => {
+				console.log(valid);
+			})
+			.catch(error => {
+				setValidationError(error.errors);
+			});
 		setSignUpUser(initialSignupUser);
 		axios
 			.post(
@@ -58,11 +70,15 @@ const Signupform = () => {
 					? 'Congrats, you are in. You can now log in'
 					: 'There was an error, please try again'}
 			</div>
+			<div>
+				{validationError ? validationError.map(item => item) : ''}
+			</div>
 			<form onSubmit={onSignupSubmitForm}>
 				<label>
 					Email
 					<input
 						type='text'
+						name='email'
 						id='email'
 						value={signUpUser.email}
 						onChange={onSignupFormChange}
@@ -72,6 +88,7 @@ const Signupform = () => {
 					Password
 					<input
 						type='text'
+						name='password'
 						id='password'
 						value={signUpUser.password}
 						onChange={onSignupFormChange}
@@ -81,15 +98,17 @@ const Signupform = () => {
 					First Name
 					<input
 						type='text'
+						name='name'
 						id='name'
 						value={signUpUser.name}
 						onChange={onSignupFormChange}
 					/>
 				</label>
 				<label>
-					Password
+					Last Name
 					<input
 						type='text'
+						name='last_name'
 						id='last_name'
 						value={signUpUser.last_name}
 						onChange={onSignupFormChange}
