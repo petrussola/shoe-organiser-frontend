@@ -2,6 +2,7 @@
 // dependencies
 import React, { useState } from 'react';
 import axios from 'axios';
+import zxcvbn from 'zxcvbn';
 
 // helper
 import { schema } from '../../Helpers/Formvalidation';
@@ -9,6 +10,7 @@ import { schema } from '../../Helpers/Formvalidation';
 // components
 import SignupMessage from './SignupMessage';
 import ValidationMessage from './ValidationMessage';
+import PasswordStrength from './PasswordStrength';
 
 const initialSignupUser = {
 	email: '',
@@ -19,6 +21,7 @@ const initialSignupUser = {
 
 const Signupform = () => {
 	const [signUpUser, setSignUpUser] = useState(initialSignupUser); // state of form content
+	const [passwordStrength, setpasswordStrength] = useState(null); // password strength
 	const [isLoading, setIsLoading] = useState(false); // displays loading message while waiting for Promise to resolve
 	const [isSignup, setIsSignup] = useState(false); // succesful signup
 	const [signupError, setSignupError] = useState(null); // in case sign up error. Store a string that gets displayed in case of error
@@ -29,6 +32,8 @@ const Signupform = () => {
 			...signUpUser,
 			[e.target.id]: e.target.value,
 		});
+		const { score } = zxcvbn(signUpUser.password);
+		setpasswordStrength(score);
 	};
 
 	const onSignupSubmitForm = async e => {
@@ -82,6 +87,7 @@ const Signupform = () => {
 				: validationError.map(item => {
 						return <ValidationMessage item={item} />;
 				  })}
+			<PasswordStrength passwordStrength={passwordStrength} />
 			<form onSubmit={onSignupSubmitForm}>
 				<label>
 					Email
