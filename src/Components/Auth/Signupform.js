@@ -6,6 +6,10 @@ import axios from 'axios';
 // helper
 import { schema } from '../../Helpers/Formvalidation';
 
+// components
+import SignupMessage from './SignupMessage';
+import ValidationMessage from './ValidationMessage';
+
 const initialSignupUser = {
 	email: '',
 	password: '',
@@ -14,40 +18,45 @@ const initialSignupUser = {
 };
 
 const Signupform = () => {
-	const [signUpUser, setSignUpUser] = useState(initialSignupUser);
-	const [signupSuccess, setSignupSuccess] = useState();
-	const [validationError, setValidationError] = useState();
+	const [signUpUser, setSignUpUser] = useState(initialSignupUser); // state of form content
+	const [isLoading, setIsLoading] = useState(false); // displays loading message while waiting for Promise to resolve
+	const [isSignup, setIsSignup] = useState(false); // succesful signup
+	const [signupError, setSignupError] = useState(null); // in case sign up error. Store a string that gets displayed in case of error
+	const [validationError, setValidationError] = useState([]); // stores array of validation error messages, if any
 
 	const onSignupFormChange = e => {
-		setSignupSuccess(null);
 		setSignUpUser({
 			...signUpUser,
 			[e.target.id]: e.target.value,
 		});
 	};
 
-	const onSignupSubmitForm = e => {
+	const onSignupSubmitForm = async e => {
 		e.preventDefault();
-		schema
-			.validate(signUpUser, { abortEarly: false })
-			.then(valid => {
-				console.log(valid);
-			})
-			.catch(error => {
-				setValidationError(error.errors);
-			});
-		setSignUpUser(initialSignupUser);
-		axios
-			.post(
+		setValidationError([]); // clear validation errors, if any
+		setSignupError(null); // clear error messages
+		try {
+			const validatedUser = await schema.validate(signUpUser, {
+				abortEarly: false,
+			}); // yup validation
+			setIsLoading(true); // activates loading spinner
+			await axios.post(
 				`${process.env.REACT_APP_BASE_URL}api/auth/register`,
-				signUpUser
-			)
-			.then(() => {
-				setSignupSuccess(true);
-			})
-			.catch(() => {
-				setSignupSuccess(false);
-			});
+				validatedUser
+			);
+			setIsSignup(true); // sets sign up as success
+		} catch (error) {
+			if (error.message === 'Network Error') {
+				setSignupError('There was a network error. Try again later.'); // if server is down
+			} else if (error.name === 'ValidationError') {
+				setValidationError(error.errors); // if fields are not validated
+			} else {
+				setSignupError(error.response.data.message); // sets error message
+			}
+		} finally {
+			setSignUpUser(initialSignupUser); // resets form
+			setIsLoading(false); // hides loading spinner
+		}
 	};
 
 	const isDisabled = () => {
@@ -63,16 +72,16 @@ const Signupform = () => {
 	};
 	return (
 		<div>
-			<div>
-				{signupSuccess === null
-					? null
-					: signupSuccess
-					? 'Congrats, you are in. You can now log in'
-					: 'There was an error, please try again'}
-			</div>
-			<div>
-				{validationError ? validationError.map(item => item) : ''}
-			</div>
+			<SignupMessage
+				isSignup={isSignup}
+				signupError={signupError}
+				isLoading={isLoading}
+			/>
+			{validationError.length === 0
+				? null
+				: validationError.map(item => {
+						return <ValidationMessage item={item} />;
+				  })}
 			<form onSubmit={onSignupSubmitForm}>
 				<label>
 					Email
