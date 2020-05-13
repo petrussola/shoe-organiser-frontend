@@ -1,19 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
-const PasswordStrength = ({ passwordStrength }) => {
+const StyledDiv = styled.div`
+	background-color: ${props =>
+		props.passwordStrength < 3 ? 'red' : 'green'};
+	color: ${props => (props.passwordStrength < 3 ? 'black' : 'white')};
+`;
+
+const PasswordStrength = props => {
 	let verdict;
-	if (passwordStrength === 0 || passwordStrength === 1) {
+	if (props.passwordStrength === 0) {
 		verdict = 'Poor';
-	} else if (passwordStrength === 2) {
+	} else if (props.passwordStrength === 1) {
+		verdict = 'Poor';
+	} else if (props.passwordStrength === 2) {
 		verdict = 'Ok';
-	} else if (passwordStrength === 3) {
+	} else if (props.passwordStrength === 3) {
 		verdict = 'Good';
 	} else {
 		verdict = 'Strong';
 	}
+	if (props.passwordStrength === null) {
+		return null;
+	}
 	return (
-		<div>{!passwordStrength ? null : `Pasword strength: ${verdict}`}</div>
+		<StyledDiv passwordStrength={props.passwordStrength}>
+			{`Password strength: ${verdict}`}
+		</StyledDiv>
 	);
 };
 
