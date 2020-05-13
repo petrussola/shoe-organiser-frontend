@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import zxcvbn from 'zxcvbn';
 import styled from 'styled-components';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 // helper
 import { schema } from '../../Helpers/Formvalidation';
@@ -23,7 +25,6 @@ const StyledForm = styled.form`
 		height: 3rem;
 	}
 	span {
-		background-color: red;
 		margin-left: -25px;
 	}
 `;
@@ -37,12 +38,12 @@ const initialSignupUser = {
 
 const Signupform = () => {
 	const [signUpUser, setSignUpUser] = useState(initialSignupUser); // state of form content
-	const [passwordStrength, setpasswordStrength] = useState(null); // password strength
+	const [passwordStrength, setPasswordStrength] = useState(null); // password strength
+	const [passwordHidden, setPasswordHidden] = useState(true); // is password in password field hidden
 	const [isLoading, setIsLoading] = useState(false); // displays loading message while waiting for Promise to resolve
 	const [isSignup, setIsSignup] = useState(false); // succesful signup
 	const [signupError, setSignupError] = useState(null); // in case sign up error. Store a string that gets displayed in case of error
 	const [validationError, setValidationError] = useState([]); // stores array of validation error messages, if any
-	const [passwordHidden, setPasswordHidden] = useState(true); // is password in password field hidden
 
 	const onSignupFormChange = e => {
 		setSignUpUser({
@@ -50,10 +51,10 @@ const Signupform = () => {
 			[e.target.id]: e.target.value,
 		});
 		if (signUpUser.password.length === 0) {
-			setpasswordStrength(null);
+			setPasswordStrength(null);
 		} else {
 			const { score } = zxcvbn(signUpUser.password);
-			setpasswordStrength(score);
+			setPasswordStrength(score);
 		}
 	};
 
@@ -62,7 +63,7 @@ const Signupform = () => {
 		setValidationError([]); // clear validation errors, if any
 		setSignupError(null); // clear error messages
 		if (passwordStrength < 3) {
-			setpasswordStrength(null);
+			setPasswordStrength(null);
 			setValidationError(['Dude, choose a stronger password']);
 			return;
 		}
@@ -71,7 +72,7 @@ const Signupform = () => {
 				abortEarly: false,
 			}); // yup validation
 			setIsLoading(true); // activates loading spinner
-			setpasswordStrength(null);
+			setPasswordStrength(null);
 			await axios.post(
 				`${process.env.REACT_APP_BASE_URL}api/auth/register`,
 				validatedUser
@@ -143,10 +144,15 @@ const Signupform = () => {
 						className='pw-icon'
 						onClick={() => {}}
 						onKeyDown={togglePassword}
+						onMouseDown={togglePassword}
 						role='button'
 						tabIndex={0}
 					>
-						X
+						{passwordHidden ? (
+							<VisibilityIcon />
+						) : (
+							<VisibilityOffIcon />
+						)}
 					</span>
 					<PasswordStrength passwordStrength={passwordStrength} />
 				</label>
