@@ -8,8 +8,8 @@ import { GlobalStyle } from './Styles/Globalstyle';
 
 // COMPONENTS
 import Navbar from './Components/Navbar/Navbar';
-import Login from './Components/Auth/Login';
-import Signup from './Components/Auth/Signup';
+import Login from './Components/Auth/Login/Login';
+import Signup from './Components/Auth/Signup/Signup';
 
 function App() {
 	return (

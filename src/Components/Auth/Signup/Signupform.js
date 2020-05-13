@@ -8,11 +8,11 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 // helper
-import { schema } from '../../Helpers/Formvalidation';
+import { schema } from '../../../Helpers/Formvalidation';
 
 // components
 import SignupMessage from './SignupMessage';
-import ValidationMessage from './ValidationMessage';
+import ValidationMessage from '../Helpers/ValidationMessage';
 import PasswordStrength from './PasswordStrength';
 
 // styles
