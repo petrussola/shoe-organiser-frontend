@@ -1,7 +1,9 @@
+/* eslint-disable react/jsx-curly-newline */
 // DEPENDENCIES
 import React from 'react';
 import './App.css';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // GLOBAL STYLE
 import { GlobalStyle } from './Styles/Globalstyle';
@@ -19,9 +21,26 @@ function App() {
 			<Navbar />
 			<Route path='/login' component={Login} />
 			<Route path='/signup' component={Signup} />
-			<Route path='/shoes' component={Shoes} />
+			<PrivateRoute path='/shoes' component={Shoes} />
 		</div>
 	);
 }
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+	<Route
+		{...rest}
+		render={props =>
+			localStorage.getItem('token') ? (
+				<Component {...props} />
+			) : (
+				<Redirect to='/login' />
+			)
+		}
+	/>
+);
+
+PrivateRoute.propTypes = {
+	component: PropTypes.objectOf(PropTypes.object),
+};
 
 export default App;
