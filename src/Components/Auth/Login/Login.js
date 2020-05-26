@@ -12,7 +12,7 @@ const initialUser = {
 	password: '',
 };
 
-const Login = props => {
+const Login = ({ setIsLoggedIn, history }) => {
 	const [userLogin, setUserLogin] = useState(initialUser); // state for user being filled in the form
 	const [isLoading, setIsLoading] = useState(false); // displays loading message while waiting for Promise to resolve
 	const [authError, setauthError] = useState(null); // in case sign up error. Store a string that gets displayed in case of error
@@ -37,8 +37,9 @@ const Login = props => {
 				userLogin
 			);
 			setUserLogin(initialUser); // clears the form
+			setIsLoggedIn(true);
 			localStorage.setItem('token', data.data.token); // saves token to loca storage
-			props.history.push('/shoes'); // redirect to shoes page
+			history.push('/shoes'); // redirect to shoes page
 		} catch (error) {
 			setauthError(error.response.data.message); // sets login error
 		} finally {
@@ -78,6 +79,7 @@ const Login = props => {
 
 Login.propTypes = {
 	history: PropTypes.objectOf(PropTypes.object),
+	setIsLoggedIn: PropTypes.bool.isRequired,
 };
 
 export default Login;

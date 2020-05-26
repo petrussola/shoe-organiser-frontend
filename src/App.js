@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 // DEPENDENCIES
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -15,11 +15,26 @@ import Signup from './Components/Auth/Signup/Signup';
 import Shoes from './Components/Shoes/Shoes';
 
 function App() {
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	return (
 		<div className='App'>
 			<GlobalStyle />
-			<Navbar />
-			<Route path='/login' component={Login} />
+			<Route
+				path='/'
+				render={props => (
+					<Navbar
+						{...props}
+						isLoggedIn={isLoggedIn}
+						setIsLoggedIn={setIsLoggedIn}
+					/>
+				)}
+			/>
+			<Route
+				path='/login'
+				render={props => (
+					<Login {...props} setIsLoggedIn={setIsLoggedIn} />
+				)}
+			/>
 			<Route path='/signup' component={Signup} />
 			<PrivateRoute path='/shoes' component={Shoes} />
 		</div>
