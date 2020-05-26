@@ -11,7 +11,7 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { schema } from '../../../Helpers/Formvalidation';
 
 // components
-import SignupMessage from './SignupMessage';
+import AuthMessage from '../Helpers/AuthMessage';
 import ValidationMessage from '../Helpers/ValidationMessage';
 import PasswordStrength from './PasswordStrength';
 
@@ -41,8 +41,8 @@ const Signupform = () => {
 	const [passwordStrength, setPasswordStrength] = useState(null); // password strength
 	const [passwordHidden, setPasswordHidden] = useState(true); // is password in password field hidden
 	const [isLoading, setIsLoading] = useState(false); // displays loading message while waiting for Promise to resolve
-	const [isSignup, setIsSignup] = useState(false); // succesful signup
-	const [signupError, setSignupError] = useState(null); // in case sign up error. Store a string that gets displayed in case of error
+	const [isAuthOk, setisAuthOk] = useState(false); // succesful signup
+	const [authError, setauthError] = useState(null); // in case sign up error. Store a string that gets displayed in case of error
 	const [validationError, setValidationError] = useState([]); // stores array of validation error messages, if any
 
 	const onSignupFormChange = e => {
@@ -61,7 +61,7 @@ const Signupform = () => {
 	const onSignupSubmitForm = async e => {
 		e.preventDefault();
 		setValidationError([]); // clear validation errors, if any
-		setSignupError(null); // clear error messages
+		setauthError(null); // clear error messages
 		if (passwordStrength < 3) {
 			setPasswordStrength(null);
 			setValidationError(['Dude, choose a stronger password']);
@@ -74,17 +74,17 @@ const Signupform = () => {
 			setIsLoading(true); // activates loading spinner
 			setPasswordStrength(null);
 			await axios.post(
-				`${process.env.REACT_APP_BASE_URL}api/auth/register`,
+				`${process.env.REACT_APP_BASE_URL}/api/auth/register`,
 				validatedUser
 			);
-			setIsSignup(true); // sets sign up as success
+			setisAuthOk(true); // sets sign up as success
 		} catch (error) {
 			if (error.message === 'Network Error') {
-				setSignupError('There was a network error. Try again later.'); // if server is down
+				setauthError('There was a network error. Try again later.'); // if server is down
 			} else if (error.name === 'ValidationError') {
 				setValidationError(error.errors); // if fields are not validated
 			} else {
-				setSignupError(error.response.data.message); // sets error message
+				setauthError(error.response.data.message); // sets error message
 			}
 		} finally {
 			setSignUpUser(initialSignupUser); // resets form
@@ -108,10 +108,10 @@ const Signupform = () => {
 		return false;
 	};
 	return (
-		<div>
-			<SignupMessage
-				isSignup={isSignup}
-				signupError={signupError}
+		<section>
+			<AuthMessage
+				isAuthOk={isAuthOk}
+				authError={authError}
 				isLoading={isLoading}
 			/>
 			{validationError.length === 0
@@ -180,7 +180,7 @@ const Signupform = () => {
 					Sign up
 				</button>
 			</StyledForm>
-		</div>
+		</section>
 	);
 };
 

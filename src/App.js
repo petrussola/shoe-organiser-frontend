@@ -10,6 +10,7 @@ import { GlobalStyle } from './Styles/Globalstyle';
 import Navbar from './Components/Navbar/Navbar';
 import Login from './Components/Auth/Login/Login';
 import Signup from './Components/Auth/Signup/Signup';
+import Shoes from './Components/Shoes/Shoes';
 
 function App() {
 	return (
@@ -18,6 +19,7 @@ function App() {
 			<Navbar />
 			<Route path='/login' component={Login} />
 			<Route path='/signup' component={Signup} />
+			<Route path='/shoes' component={Shoes} />
 		</div>
 	);
 }

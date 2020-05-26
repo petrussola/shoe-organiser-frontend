@@ -1,26 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SignupMessage = ({ isSignup, signupError, isLoading }) => {
+const AuthMessage = ({ isAuthOk, authError, isLoading }) => {
 	// while loading
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 	// if succesful signup
-	if (isSignup) {
+	if (isAuthOk) {
 		return <div>Congrats, you are in. You can now log in</div>;
 	}
 	// if any signup error
-	if (signupError) {
-		return <div>{signupError}</div>;
+	if (authError) {
+		return <div>{authError}</div>;
 	}
 	return <div />;
 };
 
-SignupMessage.propTypes = {
-	isSignup: PropTypes.bool.isRequired,
-	signupError: PropTypes.string.isRequired,
+AuthMessage.propTypes = {
+	isAuthOk: PropTypes.bool.isRequired,
+	authError: PropTypes.string.isRequired,
 	isLoading: PropTypes.bool.isRequired,
 };
 
-export default SignupMessage;
+export default AuthMessage;
